@@ -24,6 +24,38 @@
   place-items: center;
 }
 
+.w-fit {
+  width: fit-content;
+}
+.mx-auto {
+  margin: auto;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-red {
+  color: red;
+}
+.text-green {
+  color: green;
+}
+
+ol {
+  color: dodgerblue;
+  font-size: 1rem;
+  line-height: 2rem;
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);

@@ -10,7 +10,7 @@ import {
 import PeerVideoAudioElem from "./components/PeerVideoAudioElem";
 
 function App() {
-  const huddleClient = getHuddleClient();
+  const huddleClient = getHuddleClient("YOUR_API_KEY");
   const stream = useRootStore((state) => state.stream);
   const enableStream = useRootStore((state) => state.enableStream);
   const pauseTracks = useRootStore((state) => state.pauseTracks);

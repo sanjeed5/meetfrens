@@ -48,6 +48,10 @@ ol {
   line-height: 2rem;
 }
 
+.text-blue {
+  color: dodgerblue;
+}
+
 .grid {
   display: grid;
 }

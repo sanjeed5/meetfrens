@@ -1,28 +1,28 @@
-import { useEffect, useRef, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 import {
   HuddleClientProvider,
   getHuddleClient,
-  useRootStore,
 } from "@huddle01/huddle01-client";
+
+import { useHuddleStore } from "@huddle01/huddle01-client/store";
 import PeerVideoAudioElem from "./components/PeerVideoAudioElem";
+import MeVideoElem from "./components/MeVideoElem";
 
 function App() {
-  const huddleClient = getHuddleClient("YOUR_API_KEY");
-  const stream = useRootStore((state) => state.stream);
-  const enableStream = useRootStore((state) => state.enableStream);
-  const pauseTracks = useRootStore((state) => state.pauseTracks);
-  const isCamPaused = useRootStore((state) => state.isCamPaused);
-  const peers = useRootStore((state) => state.peers);
-  const peerId = useRootStore((state) => state.peerId);
-  const lobbyPeers = useRootStore((state) => state.lobbyPeers);
-  const roomState = useRootStore((state) => state.roomState);
+  const huddleClient = getHuddleClient(
+    "2287cc4a5bb1875f669dcabc69d39dfc82d880fee8884f7fb39b1b984b81cb86"
+  );
+  const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
+  const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
+  const roomState = useHuddleStore((state) => state.roomState);
+  const recordingState = useHuddleStore((state) => state.recordingState);
+  const recordings = useHuddleStore((state) => state.recordings);
 
   const handleJoin = async () => {
     try {
-      await huddleClient.join("dev ", {
+      await huddleClient.join("dev", {
         address: "0x15900c698ee356E6976e5645394F027F0704c8Eb",
         wallet: "",
         ens: "axit.eth",
@@ -33,18 +33,6 @@ function App() {
       console.log({ error });
     }
   };
-
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-    }
-  }, [stream]);
-
-  useEffect(() => {
-    console.log({ peers: Object.values(peers), peerId, isCamPaused });
-  }, [peers, peerId, isCamPaused]);
 
   return (
     <HuddleClientProvider value={huddleClient}>
@@ -63,6 +51,7 @@ function App() {
           <h2 className={`text-${!roomState.joined ? "red" : "green"}`}>
             Room Joined:&nbsp;{roomState.joined.toString()}
           </h2>
+
           <h2>Instructions</h2>
           <ol className="w-fit mx-auto text-left">
             <li>
@@ -86,8 +75,6 @@ function App() {
         <div>
           <div className="card">
             <button onClick={handleJoin}>Join Room</button>
-            <button onClick={() => enableStream()}>Enable Stream</button>
-            <button onClick={() => pauseTracks()}>Disable Stream</button>
             <button onClick={() => huddleClient.enableWebcam()}>
               Enable Webcam
             </button>
@@ -97,15 +84,21 @@ function App() {
             <button onClick={() => huddleClient.allowAllLobbyPeersToJoinRoom()}>
               allowAllLobbyPeersToJoinRoom()
             </button>
+            <button
+              onClick={() =>
+                huddleClient.startRecording({
+                  sourceUrl: "https://www.youtube.com/watch?v=x-Gl6k4CFkw",
+                })
+              }
+            >
+              startRecording()
+            </button>
+            <button onClick={() => huddleClient.stopRecording({ ipfs: true })}>
+              stopRecording()
+            </button>
           </div>
-          {!isCamPaused && (
-            <video
-              style={{ width: "50%" }}
-              ref={videoRef}
-              autoPlay
-              muted
-            ></video>
-          )}
+
+          <MeVideoElem />
 
           {lobbyPeers[0] && <h2>Lobby Peers</h2>}
           <div>
@@ -114,12 +107,19 @@ function App() {
             ))}
           </div>
 
-          {Object.values(peers)[0] && <h2>Peers</h2>}
+          {peersKeys[0] && <h2>Peers</h2>}
 
           <div className="peers-grid">
-            {Object.values(peers).map((peer) => (
-              <PeerVideoAudioElem peerIdAtIndex={peer.peerId} />
+            {peersKeys.map((key) => (
+              <PeerVideoAudioElem key={`peerId-${key}`} peerIdAtIndex={key} />
             ))}
+          </div>
+          <div className="text-blue">
+            <h2>Recording State</h2>
+            <h3>inProgress: {recordingState.inProgress.toString()}</h3>
+            <h3>processing: {recordingState.processing.toString()}</h3>
+            <h3>started: {recordingState.started.toString()}</h3>
+            <h3>recordings: {JSON.stringify(recordings)}</h3>
           </div>
         </div>
       </div>

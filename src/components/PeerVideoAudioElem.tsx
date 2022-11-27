@@ -1,4 +1,4 @@
-import { useHuddleStore } from "@huddle01/huddle01-client/hooks";
+import { useHuddleStore } from "@huddle01/huddle01-client/store";
 import React, { useCallback, useEffect, useRef } from "react";
 
 interface Props {

@@ -11,9 +11,7 @@ import PeerVideoAudioElem from "./components/PeerVideoAudioElem";
 import MeVideoElem from "./components/MeVideoElem";
 
 function App() {
-  const huddleClient = getHuddleClient(
-    "2287cc4a5bb1875f669dcabc69d39dfc82d880fee8884f7fb39b1b984b81cb86"
-  );
+  const huddleClient = getHuddleClient("YOUR_API_KEY");
   const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
   const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
   const roomState = useHuddleStore((state) => state.roomState);
@@ -23,7 +21,7 @@ function App() {
   const handleJoin = async () => {
     try {
       await huddleClient.join("dev", {
-        address: "YOUR-API-KEY",
+        address: "0x15900c698ee356E6976e5645394F027F0704c8Eb",
         wallet: "",
         ens: "axit.eth",
       });
@@ -86,8 +84,9 @@ function App() {
             </button>
             <button
               onClick={() =>
+                // will not work in localhost
                 huddleClient.startRecording({
-                  sourceUrl: "https://www.youtube.com/watch?v=x-Gl6k4CFkw",
+                  sourceUrl: window.location.href,
                 })
               }
             >

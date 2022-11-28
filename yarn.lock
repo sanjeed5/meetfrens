@@ -250,8 +250,10 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.15.16.tgz#284522de76abe951e4ed2bd24a467e8d49c67933"
   integrity sha512-SDLfP1uoB0HZ14CdVYgagllgrG7Mdxhkt4jDJOKl/MldKrkQ6vDJMZKl2+5XsEY/Lzz37fjgLQoJBGuAw/x8kQ==
 
-"@huddle01/huddle01-client@../mono/packages/huddle01-client/":
-  version "0.0.8"
+"@huddle01/huddle01-client@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@huddle01/huddle01-client/-/huddle01-client-0.0.9.tgz#342e6f21cfb6836ace9a6ae481f25be03ff06aae"
+  integrity sha512-yZ87O1l/dG6MTc5z3sO4OoRbHuGzPySBPBzl7k1TvlmYT7jUeiVrwSdnZTG/DvDGM4sxEG8k54srh1FA0fKLdA==
   dependencies:
     axios "^0.27.2"
     dayjs "^1.11.4"

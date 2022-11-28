@@ -23,7 +23,7 @@ function App() {
   const handleJoin = async () => {
     try {
       await huddleClient.join("dev", {
-        address: "0x15900c698ee356E6976e5645394F027F0704c8Eb",
+        address: "YOUR-API-KEY",
         wallet: "",
         ens: "axit.eth",
       });

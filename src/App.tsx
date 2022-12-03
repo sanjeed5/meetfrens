@@ -1,5 +1,9 @@
 import reactLogo from "./assets/react.svg";
 import "./App.css";
+// import redis from 'redis'
+const Redis = require('ioredis');
+const fs = require('fs');
+
 
 import {
   HuddleClientProvider,
@@ -22,23 +26,55 @@ function App() {
    List of peers
    List of rooms
   */
+
+  const redis = new Redis({
+       host: 'redis-14119.c212.ap-south-1-1.ec2.cloud.redislabs.com',
+       port: 14119,
+       password: process.env.REDIS_PWD
+   });
+
+  const client = redis.createClient();
+  client.connect()
+
+  client.on('error', err => {
+    console.log('Error ' + err);
+  });
+
+   // peers set
+   // roomids set
+   // roomid-peers key value
+
+   client.hmset('roomids', {
+    roomid: '0',
+  });
+
+  client.hgetall('roomids', function(err, object) {
+    console.log(object); 
+  });
+
+  client.sadd(['peerids', "peerid"], function(err, reply) {
+    console.log(reply); // 4
+  });
+
+
  
   const handleJoin = async () => {
-    /*
-      User joins lobby. 
-      POST add to active peer
-      GET !FULL Room id
-      If yes, join. 
-      If no, create random room ID. 
-      POST room_id !FULL. 
+    
+      // User joins lobby. 
+      client.set("name", "Flavio")
 
-      When leaving room, 
-        If room full, make room !full
-          UPDATE roomid !full
-        else del roomid
-          DEL roomid. 
-        DEL active peer
-    */
+      // POST add to active peer
+      // GET !FULL Room id
+      // If yes, join. 
+      // If no, create random room ID. 
+      // POST room_id !FULL. 
+
+      // When leaving room, 
+      //   If room full, make room !full
+      //     UPDATE roomid !full
+      //   else del roomid
+      //     DEL roomid. 
+      //   DEL active peer
 
     try {
       await huddleClient.join("dev", {

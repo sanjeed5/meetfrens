@@ -12,7 +12,8 @@
     "@huddle01/huddle01-client": "^0.0.9",
     "dotenv": "^16.0.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "redis": "^4.5.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.15",

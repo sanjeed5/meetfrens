@@ -25,7 +25,7 @@ function App() {
         wallet: "",
         ens: "axit.eth",
       });
-      huddleClient.setRoomLockState(prevState => !prevState)
+      huddleClient.setRoomLockState(false)
       console.log("joined");
     } catch (error) {
       console.log({ error });

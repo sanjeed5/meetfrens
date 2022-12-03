@@ -25,7 +25,7 @@ function App() {
         wallet: "",
         ens: "axit.eth",
       });
-
+      huddleClient.setRoomLockState(prevState => !prevState)
       console.log("joined");
     } catch (error) {
       console.log({ error });
@@ -79,22 +79,9 @@ function App() {
             <button onClick={() => huddleClient.disableWebcam()}>
               Disable Webcam
             </button>
-            <button onClick={() => huddleClient.allowAllLobbyPeersToJoinRoom()}>
-              allowAllLobbyPeersToJoinRoom()
-            </button>
-            <button
-              onClick={() =>
-                // will not work in localhost
-                huddleClient.startRecording({
-                  sourceUrl: window.location.href,
-                })
-              }
-            >
-              startRecording()
-            </button>
-            <button onClick={() => huddleClient.stopRecording({ ipfs: true })}>
-              stopRecording()
-            </button>
+            
+            
+         
           </div>
 
           <MeVideoElem />
@@ -113,13 +100,7 @@ function App() {
               <PeerVideoAudioElem key={`peerId-${key}`} peerIdAtIndex={key} />
             ))}
           </div>
-          <div className="text-blue">
-            <h2>Recording State</h2>
-            <h3>inProgress: {recordingState.inProgress.toString()}</h3>
-            <h3>processing: {recordingState.processing.toString()}</h3>
-            <h3>started: {recordingState.started.toString()}</h3>
-            <h3>recordings: {JSON.stringify(recordings)}</h3>
-          </div>
+          
         </div>
       </div>
     </HuddleClientProvider>

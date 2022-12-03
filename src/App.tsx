@@ -18,7 +18,28 @@ function App() {
   const recordingState = useHuddleStore((state) => state.recordingState);
   const recordings = useHuddleStore((state) => state.recordings);
 
+  /* Datastore
+   List of peers
+   List of rooms
+  */
+ 
   const handleJoin = async () => {
+    /*
+      User joins lobby. 
+      POST add to active peer
+      GET !FULL Room id
+      If yes, join. 
+      If no, create random room ID. 
+      POST room_id !FULL. 
+
+      When leaving room, 
+        If room full, make room !full
+          UPDATE roomid !full
+        else del roomid
+          DEL roomid. 
+        DEL active peer
+    */
+
     try {
       await huddleClient.join("dev", {
         address: "0x15900c698ee356E6976e5645394F027F0704c8Eb",

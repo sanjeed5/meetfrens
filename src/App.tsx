@@ -1,6 +1,40 @@
 import reactLogo from "./assets/react.svg";
 import "./App.css";
 
+// Rainbowkit
+import '@rainbow-me/rainbowkit/styles.css';
+import {
+  getDefaultWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import {
+  chain,
+  configureChains,
+  createClient,
+  WagmiConfig,
+} from 'wagmi';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
+const { chains, provider } = configureChains(
+  [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
+  [
+    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
+    publicProvider()
+  ]
+);
+const { connectors } = getDefaultWallets({
+  appName: 'meetfrens',
+  chains
+});
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider
+})
+
+// Huddle
 import {
   HuddleClientProvider,
   getHuddleClient,
@@ -18,27 +52,7 @@ function App() {
   const recordingState = useHuddleStore((state) => state.recordingState);
   const recordings = useHuddleStore((state) => state.recordings);
 
-  /* Datastore
-   List of peers
-   List of rooms
-  */
- 
   const handleJoin = async () => {
-    /*
-      User joins lobby. 
-      POST add to active peer
-      GET !FULL Room id
-      If yes, join. 
-      If no, create random room ID. 
-      POST room_id !FULL. 
-
-      When leaving room, 
-        If room full, make room !full
-          UPDATE roomid !full
-        else del roomid
-          DEL roomid. 
-        DEL active peer
-    */
 
     try {
       await huddleClient.join("dev", {
@@ -53,78 +67,65 @@ function App() {
     }
   };
 
+  // const renderNotConnectedContainer = () => (
+  //   <button onClick={connectWallet} className="cta-button connect-wallet-button">
+  //     Connect to Wallet
+  //   </button>
+  // );
+
   return (
-    <HuddleClientProvider value={huddleClient}>
-      <div className="App grid grid-cols-2">
-        <div>
-          <div>
-            <a href="https://vitejs.dev" target="_blank">
-              <img src="/vite.svg" className="logo" alt="Vite logo" />
-            </a>
-            <a href="https://reactjs.org" target="_blank">
-              <img src={reactLogo} className="logo react" alt="React logo" />
-            </a>
+    <WagmiConfig client={wagmiClient}>
+      <RainbowKitProvider chains={chains}>
+        <HuddleClientProvider value={huddleClient}>
+          <div className="App grid">
+            <div>
+              <h1>meetfrens</h1>
+              {/* {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()} */}
+            </div>
+            <div className="w-fit mx-auto">
+              <ConnectButton />
+            </div>
+            <div>
+              
+            </div>
+
+            <div>
+              <div className="card">
+                <button onClick={handleJoin}>Join Room</button>
+                <button onClick={() => huddleClient.enableWebcam()}>
+                  Enable Webcam
+                </button>
+                <button onClick={() => huddleClient.disableWebcam()}>
+                  Disable Webcam
+                </button>
+
+
+
+              </div>
+
+              <MeVideoElem />
+
+              {lobbyPeers[0] && <h2>Lobby Peers</h2>}
+              <div>
+                {lobbyPeers.map((peer) => (
+                  <div>{peer.peerId}</div>
+                ))}
+              </div>
+
+              {peersKeys[0] && <h2>Peers</h2>}
+
+              <div className="peers-grid">
+                {peersKeys.map((key) => (
+                  <PeerVideoAudioElem key={`peerId-${key}`} peerIdAtIndex={key} />
+                ))}
+              </div>
+
+            </div>
           </div>
-          <h1>Vite + React</h1>
+        </HuddleClientProvider>
+      </RainbowKitProvider>
+    </WagmiConfig>
 
-          <h2 className={`text-${!roomState.joined ? "red" : "green"}`}>
-            Room Joined:&nbsp;{roomState.joined.toString()}
-          </h2>
-
-          <h2>Instructions</h2>
-          <ol className="w-fit mx-auto text-left">
-            <li>
-              Click on <b>Enable Stream</b>
-            </li>
-            <li>
-              Then Click on <b>Join room</b>, <i>"Room Joined"</i> should be
-              changed to true
-            </li>
-            <li>
-              Open the app in a <b>new tab</b> and repeat <b>steps 1 & 2</b>
-            </li>
-            <li>Return to 1st tab, now you'll see peers in the peer list,</li>
-            <li>
-              Click on <b>allowAllLobbyPeersToJoinRoom</b> to accept peers into
-              the room.
-            </li>
-          </ol>
-        </div>
-
-        <div>
-          <div className="card">
-            <button onClick={handleJoin}>Join Room</button>
-            <button onClick={() => huddleClient.enableWebcam()}>
-              Enable Webcam
-            </button>
-            <button onClick={() => huddleClient.disableWebcam()}>
-              Disable Webcam
-            </button>
-            
-            
-         
-          </div>
-
-          <MeVideoElem />
-
-          {lobbyPeers[0] && <h2>Lobby Peers</h2>}
-          <div>
-            {lobbyPeers.map((peer) => (
-              <div>{peer.peerId}</div>
-            ))}
-          </div>
-
-          {peersKeys[0] && <h2>Peers</h2>}
-
-          <div className="peers-grid">
-            {peersKeys.map((key) => (
-              <PeerVideoAudioElem key={`peerId-${key}`} peerIdAtIndex={key} />
-            ))}
-          </div>
-          
-        </div>
-      </div>
-    </HuddleClientProvider>
   );
 }
 

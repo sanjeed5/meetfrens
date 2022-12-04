@@ -25,7 +25,7 @@ const { chains, provider } = configureChains(
   ]
 );
 const { connectors } = getDefaultWallets({
-  appName: 'meetfrens',
+  appName: 'makefrens',
   chains
 });
 const wagmiClient = createClient({
@@ -64,8 +64,8 @@ function App() {
     actionId: "wid_staging_06c9d0b73b1db8264c78b4a54b871f59",
     signal: address,
     enableTelemetry: true,
-    appName: "meetfrens",
-    signalDescription: "Create account on meetfrens",
+    appName: "makefrens",
+    signalDescription: "Create account on makefrens",
     theme: "dark",
     debug: true, // DO NOT SET TO `true` IN PRODUCTION
     onSuccess: (result) => onWorldIDSuccess(result),
@@ -95,7 +95,7 @@ function App() {
 
   const renderConnectContainer = () => (
     <div>
-      {!isConnected && <p>Connect to meetfrens</p>}
+      {!isConnected && <p>Connect to makefrens</p>}
       <div className="w-fit mx-auto">
         <ConnectButton chainStatus="none" showBalance={false}/>
       </div>
@@ -104,7 +104,7 @@ function App() {
 
   const renderWorldIDContainer = () => (
     <div>
-      {!isVerifiedAddress && <p>Verify that you're a unique person to meetfrens</p>}
+      {!isVerifiedAddress && <p>Verify that you're a unique person to makefrens</p>}
       <div className="w-fit mx-auto" id="world-id-container">
         <WorldIDWidget {...worldIDWidgetProps} />
       </div>

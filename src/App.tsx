@@ -1,4 +1,3 @@
-import reactLogo from "./assets/react.svg";
 import "./App.css";
 
 // Rainbowkit
@@ -13,6 +12,7 @@ import {
   createClient,
   WagmiConfig,
 } from 'wagmi';
+import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
@@ -20,7 +20,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
   [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
+    alchemyProvider({ apiKey: 'sCB9uun12koMeTY0UkwAGGT5G_VHtR0d' }),
     publicProvider()
   ]
 );
@@ -34,6 +34,9 @@ const wagmiClient = createClient({
   provider
 })
 
+// World ID
+import { WorldIDWidget, WidgetProps } from "@worldcoin/id";
+
 // Huddle
 import {
   HuddleClientProvider,
@@ -43,8 +46,13 @@ import {
 import { useHuddleStore } from "@huddle01/huddle01-client/store";
 import PeerVideoAudioElem from "./components/PeerVideoAudioElem";
 import MeVideoElem from "./components/MeVideoElem";
+import { useState, Dispatch, useEffect } from "react";
 
 function App() {
+  const { address, isConnected } = useAccount();
+  const [ isVerifiedAddress, setIsVerifiedAddress ] = useState(false);
+  let verifiedAddressesList = [];
+
   const huddleClient = getHuddleClient("1a830629f8577a2293556d84dd8fc32b8e187dba755a2b65d21bd0ce0121523f");
   const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
   const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
@@ -52,8 +60,21 @@ function App() {
   const recordingState = useHuddleStore((state) => state.recordingState);
   const recordings = useHuddleStore((state) => state.recordings);
 
-  const handleJoin = async () => {
+  const worldIDWidgetProps: WidgetProps = {
+    actionId: "wid_staging_06c9d0b73b1db8264c78b4a54b871f59",
+    signal: address,
+    enableTelemetry: true,
+    appName: "meetfrens",
+    signalDescription: "Create account on meetfrens",
+    theme: "dark",
+    debug: true, // DO NOT SET TO `true` IN PRODUCTION
+    onSuccess: (result) => onWorldIDSuccess(result),
+    onError: ({ code, detail }) => console.log({ code, detail }),
+    onInitSuccess: () => console.log("Init successful"),
+    onInitError: (error) => console.log("Error while initialization World ID", error),
+  };
 
+  const handleJoin = async () => {
     try {
       await huddleClient.join("dev", {
         address: "0x15900c698ee356E6976e5645394F027F0704c8Eb",
@@ -67,11 +88,35 @@ function App() {
     }
   };
 
-  // const renderNotConnectedContainer = () => (
-  //   <button onClick={connectWallet} className="cta-button connect-wallet-button">
-  //     Connect to Wallet
-  //   </button>
-  // );
+  const onWorldIDSuccess = (result) => {
+    console.log("WORDLID results", result);
+    verifiedAddressesList.push(address);
+  };
+
+  const renderConnectContainer = () => (
+    <div>
+      {!isConnected && <p>Connect to meetfrens</p>}
+      <div className="w-fit mx-auto">
+        <ConnectButton chainStatus="none" showBalance={false}/>
+      </div>
+    </div>
+  );
+
+  const renderWorldIDContainer = () => (
+    <div>
+      {!isVerifiedAddress && <p>Verify that you're a unique person to meetfrens</p>}
+      <div className="w-fit mx-auto" id="world-id-container">
+        <WorldIDWidget {...worldIDWidgetProps} />
+      </div>
+    </div>
+  );
+
+  useEffect(() => {
+    if(verifiedAddressesList.includes(address))
+      setIsVerifiedAddress(true);
+    else
+      setIsVerifiedAddress(false);
+  }, [address]) 
 
   return (
     <WagmiConfig client={wagmiClient}>
@@ -82,12 +127,11 @@ function App() {
               <h1>meetfrens</h1>
               {/* {currentAccount === "" ? renderNotConnectedContainer() : renderMintUI()} */}
             </div>
-            <div className="w-fit mx-auto">
-              <ConnectButton />
-            </div>
-            <div>
-              
-            </div>
+
+            {renderConnectContainer()}
+
+            {/* If not verified */}
+            {renderWorldIDContainer()}
 
             <div>
               <div className="card">

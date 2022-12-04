@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@huddle01/huddle01-client": "^0.0.9",
+    "@rainbow-me/rainbowkit": "^0.8.0",
     "dotenv": "^16.0.3",
+    "ethers": "^5.7.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "wagmi": "^0.8.10"
   },
   "devDependencies": {
     "@types/react": "^18.0.15",

@@ -1,1 +1,1 @@
-# meetfrens
+# MakeFrens - ETHIndia-2022

@@ -53,7 +53,7 @@ function App() {
   const [ isVerifiedAddress, setIsVerifiedAddress ] = useState(false);
   let verifiedAddressesList = [];
 
-  const huddleClient = getHuddleClient("1a830629f8577a2293556d84dd8fc32b8e187dba755a2b65d21bd0ce0121523f");
+  const huddleClient = getHuddleClient(import.meta.env.VITE_HUDDLE_API_KEY);
   const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
   const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
   const roomState = useHuddleStore((state) => state.roomState);
